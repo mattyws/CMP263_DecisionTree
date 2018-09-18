@@ -147,7 +147,6 @@ class DecisionTree(object):
             new_data, new_labels = self.__get_split(data, labels, best_info_column, value)
             # Calculate the entropy for the new snapshot
             value_entropy = self.__entropy(new_labels[new_labels.columns[0]].get_values())
-            # TODO: check the logic on this max_depth, have the terminal nodes be the max_depth?
             if (self.max_depth > depth and value_entropy != 0) or (self.max_depth <= depth and value_entropy == 0.5):
                 """
                 If we do not reach the max depth and the entropy is not 0, or if we reach the max depth but the
@@ -161,7 +160,6 @@ class DecisionTree(object):
                 terminal_node = DecisionNode(self.__get_higher_frequency_value(new_labels), is_terminal=True)
                 # Add  the terminal node as a child of the current node
                 node.add_child(value, terminal_node)
-            #TODO 2: max_depth == depth and value_entropy == 0.5
         return node
 
     def __info_gain(self, data, labels):
@@ -171,52 +169,87 @@ class DecisionTree(object):
         :param labels: the class for each row in data
         :return: a dictionary with "column": InformationGain
         """
+        # Get the entropy for the labels
         infoD = self.__entropy(labels[labels.columns[0]].get_values())
         info_columns = dict()
         for j in data.columns:
+            # Compute the entropy for each column
             column_values = dict()
             for i in range(len(data[j])):
+                # Compute the appearance for each value in the column
                 if data[j][i] not in column_values.keys():
                     column_values[data[j][i]] = []
                 column_values[data[j][i]].append(i)
-            info_column = 0
+            entropy_column = 0
             for key in column_values.keys():
+                # Compute the entropy for each value in the column
                 slice_labels = []
                 for value in column_values[key]:
                     slice_labels.append(labels[labels.columns[0]][value])
                 infoDj = self.__entropy(slice_labels)
-                info_column += ( len(column_values[key])/ len(data) ) * infoDj
-
-            info_columns[j] = info_column
+                entropy_column += ( len(column_values[key])/ len(data) ) * infoDj
+            info_columns[j] = entropy_column
         for i in info_columns.keys():
+            # Now compute the information gain for each column
              info_columns[i] = infoD - info_columns[i]
         return info_columns
 
-    def __entropy(self, labels):
+    def __entropy(self, column):
+        """
+        Compute the entropy for a given column
+        :param column:
+        :return: the entropy
+        """
         label_values = dict()
-        for value in labels:
+        for value in column:
             if value not in label_values.keys():
                 label_values[value] = 0
             label_values[value] += 1
-        infoD = 0
+        entropy = 0
         for key in label_values:
-            infoD += -( (label_values[key]/len(labels))*math.log2(label_values[key]/len(labels)) )
-        return infoD
+            entropy += -((label_values[key] / len(column)) * math.log2(label_values[key] / len(column)))
+        return entropy
 
     def __get_split(self, data, labels, row, value):
+        """
+        Get a split for the data given the row and the value.
+        :param data: the data to use for split
+        :param labels: the labels for that data
+        :param row: the row name to get the value from
+        :param value: the value used to filter
+        :return: the splited data, labels
+        """
+        # Filter all data in the row that are equal to the value
         new_data = data[data[row] == value]
+        # Get the labels for those filtered data, using it index
         new_labels = labels.iloc[new_data.index.tolist()]
+        # Reset the indexes for both, that is done because pandas uses the index got from the original data
         new_data = new_data.reset_index(drop=True)
         new_labels = new_labels.reset_index(drop=True)
         return new_data, new_labels
 
     def __get_higher_frequency_value(self, labels):
+        """
+        Get the value with higher frequency
+        :param labels: the labels to compute the frequency
+        :return: the label with higher frequency
+        """
         return labels[labels.columns[0]].value_counts().idxmax()
 
     def print(self):
+        """
+        Print the tree in a pretty way.
+        """
         self.__print_tree(self.root)
 
     def __print_tree(self, current_node, indent="", last='updown'):
+        """
+        Print the tree.
+        The code was gotten from https://stackoverflow.com/questions/30893895/how-to-print-a-tree-in-python
+        :param current_node: the current node
+        :param indent: how the ident was done
+        :param last: where the last node is
+        """
         nb_children = lambda node: len(node) + 1
         size_branch = {child: nb_children(current_node.child[child]) for child in current_node.child.keys()}
 
@@ -262,11 +295,6 @@ class DecisionTree(object):
 if __name__ == "__main__":
     data = []
     labels = []
-    # with open('/home/mattyws/Documentos/DecisionTrees/CMP263_DecisionTree/resources/dadosBenchmark_validacaoAlgoritmoAD.csv', 'r') as csvfile:
-    #     spamreader = csv.reader(csvfile, delimiter=';')
-    #     for row in spamreader:
-    #         data.append(row[:-1])
-    #         labels.append(row[-1])
     data = pd.read_csv('/home/mattyws/Documentos/DecisionTrees/CMP263_DecisionTree/resources/dadosBenchmark_validacaoAlgoritmoAD.csv', sep=';')
     labels = data.drop(columns=data.columns[:-1])
     data = data.drop(columns=data.columns[-1])
