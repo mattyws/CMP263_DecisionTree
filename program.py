@@ -46,4 +46,5 @@ tree_wine.train(new_df_wine, labels_wine)
 
 #print(data_wine.iloc[0], labels_wine.iloc[0])
 #print(tree_wine.predict(data_wine.iloc[[0]]))
-tree_wine.print()
+#tree_wine.print()
+tree_wine.print(graphviz=True)
