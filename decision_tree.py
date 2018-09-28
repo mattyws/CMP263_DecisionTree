@@ -143,8 +143,7 @@ class DecisionTree(object):
         info_gain_columns = self.__info_gain(data, labels)
         # Get the higher information gain obtained
         best_info_column = max(info_gain_columns, key=info_gain_columns.get)
-        print("============================== {0} ===============================".format(best_info_column))
-        print(info_gain_columns)
+        # print("============================== {0} ===============================".format(best_info_column))
         # Get the uniques values existent, if it's numeric, get the unique values for the cut
         best_column_is_numeric = self.__is_numeric(data, best_info_column)
         if best_column_is_numeric:
@@ -278,12 +277,12 @@ class DecisionTree(object):
     def __is_numeric(self, data, column):
         return data[column].dtype == "int64" or data[column].dtype == "float64"
 
-    def print(self, graphviz=False):
+    def print(self, graphviz=False, filename="tree"):
         """
         Print the tree in a pretty way.
         """
         if graphviz :
-            self.__render_graphviz_tree()
+            self.__render_graphviz_tree(filename=filename)
         else:
             self.__print_tree(self.root)
 
@@ -335,10 +334,10 @@ class DecisionTree(object):
             next_indent = '{0}{1}{2}'.format(indent, ' ' if 'down' in last else '│', " " * len(current_node.column))
             self.__print_tree(current_node.child[child], indent=next_indent, last=next_last)
 
-    def __render_graphviz_tree(self):
+    def __render_graphviz_tree(self, filename="tree"):
         import graphviz
         nodes = [self.root]
-        tree = graphviz.Digraph(format="png")
+        tree = graphviz.Digraph(format="png", filename=filename)
         tree.attr("node", shape="box")
         id = 0
         nodes = [ {"node":self.root, "parent_id":None, "id":id, "key":None} ]
