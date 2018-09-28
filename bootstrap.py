@@ -18,20 +18,20 @@ class Bootstrap:
 
         return new_df
 
+    # data deve vir sem a coluna de labels
+    # m é quantas colunas serão pegas para selecionar, caso não seja inserido será utilizado a raiz quadrada
     @staticmethod
-    def select_columns(data):
+    def select_columns(data, m = -1):
         # mostra o número de colunas que há no meu DataFrame
-        # -1 pois a coluna do atributo alvo não conta
-        total_atr = len(data.columns) - 1
+        total_atr = len(data.columns)
         print(total_atr)
 
-        # pego a raiz quadrada do total de colunas e arredondo para baixo (ou deveria ser para cima?)
-        m = math.floor(math.sqrt(total_atr))
+        # caso o usuário não coloque nenhum valor para m, então ele irá selecionar a raiz quadrada do total de colunas
+        if (m == -1):
+            # pego a raiz quadrada do total de colunas e arredondo para baixo (ou deveria ser para cima?)
+            m = math.floor(math.sqrt(total_atr))
 
         new_df = pd.DataFrame()
-
-        # tenho que tirar a coluna alvo do DataFrame
-        data = data[data.columns[0: len(data.columns) - 1]]
 
         # seleciona quais com quais atributos irei trabalhar
         for i in range(m):
