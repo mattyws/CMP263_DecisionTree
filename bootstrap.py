@@ -6,6 +6,11 @@ class Bootstrap:
 
     @staticmethod
     def make_bootstrap(data):
+        """
+        Cria o bootstrap a partir dos dados originais
+        :param data: dados originais contendo a coluna de labels
+        :return: bootstrap gerado
+        """
         # tamanho do meu DataFrame
         tam = len(data)
 
@@ -18,13 +23,16 @@ class Bootstrap:
 
         return new_df
 
-    # data deve vir sem a coluna de labels
-    # m é quantas colunas serão pegas para selecionar, caso não seja inserido será utilizado a raiz quadrada
+
     @staticmethod
     def select_columns(data, m = -1):
+        """
+        Seleciona quais as colunas do bootstrap devem ser verificadas pela floresta
+        :param data: a base de dados contendo a coluna sem labels
+        :param m: quantas colunas serão pegas para selecionar, caso não seja inserido será utilizado a raiz quadrada
+        """
         # mostra o número de colunas que há no meu DataFrame
         total_atr = len(data.columns)
-        print(total_atr)
 
         # caso o usuário não coloque nenhum valor para m, então ele irá selecionar a raiz quadrada do total de colunas
         if (m == -1):
