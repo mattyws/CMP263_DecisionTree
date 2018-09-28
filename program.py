@@ -23,33 +23,28 @@ labels_wine = []
 
 #data_wine parecem ser todos dados numéricos
 data_wine = pd.read_csv("/home/hortensia/Documentos/TrabalhoML1/CMP263_DecisionTree/resources/Wine/wine.data.txt")
-#retirar o label do data_wine
-labels_wine = data_wine[data_wine.columns[0:1]]
-data_wine = data_wine.drop(data_wine[data_wine.columns[0:1]], axis = 1)
 
-data_wine.columns = ["Alcohol", "Malic acid", "Ash", "Alcalinity of ash", "Magnesium", "Total phenols", "Flavanoids", "Nonflavanoid phenols", "Proanthocyanins", "Color intensity", "Hue", "OD280/OD315 of diluted wines", "Proline"]
-
-#print("imprimindo dados:")
-#print(data_wine.head())
-#print("imprimindo labels:")
-#print(labels_wine.head())
-
-#tree_wine = decision_tree.DecisionTree()
-#tree_wine.train(data_wine, labels_wine)
-
-#print(data_wine.iloc[0], labels_wine.iloc[0])
-#print(tree_wine.predict(data_wine.iloc[[0]]))
-#tree_wine.print()
-
+# Cria colunas
+data_wine.columns = ["TipoVinho","Alcohol", "Malic acid", "Ash", "Alcalinity of ash", "Magnesium", "Total phenols", "Flavanoids", "Nonflavanoid phenols", "Proanthocyanins", "Color intensity", "Hue", "OD280/OD315 of diluted wines", "Proline"]
 
 # semente para o número aleatório
 random.seed(100)
-# retorna um valor dentre 0 e o tamanho dos meus dados
-#print(random.randrange(len(data)))
 
+# cria bootstrap a partir dos dados originais
+new_df_wine = bootstrap.Bootstrap.make_bootstrap(data_wine)
+print(new_df_wine)
 
-new_df = bootstrap.Bootstrap.make_bootstrap(data_wine)
-print(new_df)
+#retirar o label do data_wine depois de ter gerado o bootstrap
+labels_wine = new_df_wine[new_df_wine.columns[0:1]]
+new_df_wine = new_df_wine.drop(new_df_wine[new_df_wine.columns[0:1]], axis = 1)
 
-new_df = bootstrap.Bootstrap.select_columns(new_df)
-print(new_df)
+new_df_wine = bootstrap.Bootstrap.select_columns(new_df_wine)
+print("Imprimir dados com colunadas selecionadas")
+print(new_df_wine)
+
+tree_wine = decision_tree.DecisionTree()
+tree_wine.train(new_df_wine, labels_wine)
+
+#print(data_wine.iloc[0], labels_wine.iloc[0])
+#print(tree_wine.predict(data_wine.iloc[[0]]))
+tree_wine.print()
