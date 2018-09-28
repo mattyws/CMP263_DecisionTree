@@ -3,20 +3,7 @@ import random
 
 import bootstrap
 import decision_tree
-
-#data = pd.read_csv("dadosBenchmark_validacaoAlgoritmoAD.csv", sep=';')
-# vejo os cinco primeiros elementos dos meus dados
-#print(data.head())
-# vejo todos os meus elementos da coluna Tempo
-#print(data["Tempo"])
-# me mostra quais os tipos dos meus dados
-#print(data.dtypes)
-# seleciona a primeira linha dos meus dados
-#print(data.iloc[[2]])
-# retorna a quantidade de linhas da minha matriz
-#print(len(data))
-
-
+import KFold
 
 data_wine = []
 labels_wine = []
@@ -30,17 +17,29 @@ data_wine.columns = ["TipoVinho","Alcohol", "Malic acid", "Ash", "Alcalinity of 
 # semente para o número aleatório
 random.seed(100)
 
-# cria bootstrap a partir dos dados originais
-new_df_wine = bootstrap.Bootstrap.make_bootstrap(data_wine)
-print(new_df_wine)
+k = 10
+
+kf = KFold.KFold()
+kf.make_kfold(data_wine, 0, k, 100)
+
+data_test, data_train = kf.get_data_test_train()
+#print(data_train)
+#print("Tamanho dados originais: ", len(data_wine))
+#print("Tamanho dados de treinamento: ",len(data_train))
+#print("Tamanho dados de teste: ", len(data_test))
+
+
+# cria bootstrap a partir dos dados de treinamento
+new_df_wine = bootstrap.Bootstrap.make_bootstrap(data_train)
+#print(new_df_wine)
 
 #retirar o label do data_wine depois de ter gerado o bootstrap
 labels_wine = new_df_wine[new_df_wine.columns[0:1]]
 new_df_wine = new_df_wine.drop(new_df_wine[new_df_wine.columns[0:1]], axis = 1)
 
 new_df_wine = bootstrap.Bootstrap.select_columns(new_df_wine)
-print("Imprimir dados com colunadas selecionadas")
-print(new_df_wine)
+#print("Imprimir dados com colunadas selecionadas")
+#print(new_df_wine)
 
 tree_wine = decision_tree.DecisionTree()
 tree_wine.train(new_df_wine, labels_wine)
