@@ -5,8 +5,6 @@ import operator
 import pandas as pd
 import numpy as np
 
-#TODO: árvore gerando árvores diferentes para cada execução com colunas numéricas
-
 class DecisionNode(object):
     """
     The nodes from a decision tree.
