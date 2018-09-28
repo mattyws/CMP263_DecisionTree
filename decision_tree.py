@@ -5,13 +5,14 @@ import operator
 import pandas as pd
 import numpy as np
 
+#TODO: árvore gerando árvores diferentes para cada execução com colunas numéricas
 
 class DecisionNode(object):
     """
     The nodes from a decision tree.
     Each node is composed by the column which the decision is done, and their child.
     """
-    def __init__(self, column, is_terminal=False, is_numeric=False):
+    def __init__(self, column, is_terminal=False, is_numeric=False, parent=None):
         """
         Constructor for the DecisionNode.
         :param column: the column what the node will use to make its decision. If is a terminal, the value is the class that will be returned
@@ -22,6 +23,7 @@ class DecisionNode(object):
         # If it's terminal, it doesn't have a child
         self.child = dict()
         self.is_numeric = is_numeric
+        self.parent = parent
 
     def add_child(self, value, node):
         """
@@ -130,7 +132,7 @@ class DecisionTree(object):
             return classes
 
 
-    def __build(self, data, labels, depth=0):
+    def __build(self, data, labels, depth=0, parent=None):
         """
         The algorithm that build the decision tree.
         It is a recursive algorithm that builds it top-down.
@@ -144,14 +146,15 @@ class DecisionTree(object):
         # Get the higher information gain obtained
         best_info_column = max(info_gain_columns, key=info_gain_columns.get)
         print("============================== {0} ===============================".format(best_info_column))
+        print(info_gain_columns)
         # Get the uniques values existent, if it's numeric, get the unique values for the cut
         best_column_is_numeric = self.__is_numeric(data, best_info_column)
         if best_column_is_numeric:
             values = self.__numeric_column(data[best_info_column]).unique()
-            node = DecisionNode(best_info_column, is_numeric=True)
+            node = DecisionNode(best_info_column, is_numeric=True, parent=parent)
         else:
             values = data[best_info_column].unique()
-            node = DecisionNode(best_info_column)
+            node = DecisionNode(best_info_column, parent=parent)
         # Create a node for the best information gain column
         # Now we have the current depth where the new node created is
         depth += 1
@@ -170,12 +173,12 @@ class DecisionTree(object):
                 If we do not reach the max depth and the entropy is not 0, or if we reach the max depth but the
                 classes are even distributed (entropy == 0.5) call build and create a new node for the value
                 """
-                new_node = self.__build(new_data, new_labels, depth=depth)
+                new_node = self.__build(new_data, new_labels, depth=depth, parent=best_info_column)
                 # Add the new created child to the current node
                 node.add_child(value, new_node)
             elif value_entropy == 0 or (self.max_depth <= depth and value_entropy != 0):
                 # If the value of the entropy is 0, the snapshot is pure, create a terminal node
-                terminal_node = DecisionNode(self.__get_higher_frequency_value(new_labels), is_terminal=True)
+                terminal_node = DecisionNode(self.__get_higher_frequency_value(new_labels), is_terminal=True, parent=best_info_column)
                 # Add  the terminal node as a child of the current node
                 node.add_child(value, terminal_node)
         return node
@@ -194,7 +197,7 @@ class DecisionTree(object):
             data_column = data[j]
             if self.__is_numeric(data, j):
                 data_column = self.__numeric_column(data_column)
-            # Compute the entropy for each column
+            # Compute the entropy for each value
             column_values = dict()
             for i in range(len(data_column)):
                 # Compute the appearance for each value in the column
@@ -215,15 +218,6 @@ class DecisionTree(object):
              info_columns[i] = infoD - info_columns[i]
         return info_columns
 
-    def __numeric_column(self, column):
-        new_column = sorted(column)
-        if len(new_column)%2 == 0:
-            median = new_column[len(new_column)//2]
-        else:
-            median = (new_column[len(new_column)//2] + new_column[(len(new_column)//2)+1])/2
-        new_column = pd.cut(new_column, bins=[0, median, np.inf], labels=["<= {}".format(median), "> {}".format(median)], right=True)
-        return new_column
-
 
     def __entropy(self, column):
         """
@@ -240,6 +234,15 @@ class DecisionTree(object):
         for key in label_values:
             entropy += -((label_values[key] / len(column)) * math.log2(label_values[key] / len(column)))
         return entropy
+
+    def __numeric_column(self, column):
+        new_column = sorted(column)
+        if len(new_column)%2 == 0:
+            median = new_column[len(new_column)//2]
+        else:
+            median = (new_column[len(new_column)//2] + new_column[(len(new_column)//2)+1])/2
+        new_column = pd.cut(column, bins=[0, median, np.inf], labels=["<= {}".format(median), "> {}".format(median)], right=True)
+        return new_column
 
     def __get_split(self, data, labels, row, value, is_numeric=False):
         """
@@ -277,11 +280,14 @@ class DecisionTree(object):
     def __is_numeric(self, data, column):
         return data[column].dtype == "int64" or data[column].dtype == "float64"
 
-    def print(self):
+    def print(self, graphviz=False):
         """
         Print the tree in a pretty way.
         """
-        self.__print_tree(self.root)
+        if graphviz :
+            self.__render_graphviz_tree()
+        else:
+            self.__print_tree(self.root)
 
     def __print_tree(self, current_node, indent="", last='updown'):
         """
@@ -331,36 +337,33 @@ class DecisionTree(object):
             next_indent = '{0}{1}{2}'.format(indent, ' ' if 'down' in last else '│', " " * len(current_node.column))
             self.__print_tree(current_node.child[child], indent=next_indent, last=next_last)
 
+    def __render_graphviz_tree(self):
+        import graphviz
+        nodes = [self.root]
+        tree = graphviz.Digraph(format="png")
+        tree.attr("node", shape="box")
+        id = 0
+        nodes = [ {"node":self.root, "parent_id":None, "id":id, "key":None} ]
+        for node in nodes:
+            for key in node["node"].child.keys():
+                id+=1
+                nodes.append( {"node":node["node"].child[key], "parent_id":node["id"], "id":id, "key":key} )
+        for node in nodes:
+            tree.node(str(node["id"]), label=str(node["node"].column))
+            if node["parent_id"] is not None:
+                tree.edge(str(node["parent_id"]), str(node["id"]), label=node["key"])
+        tree.render()
 
-
-#<<<<<<< HEAD
-#if __name__ == "__main__":
-#    data = []
-#    labels = []
-    # with open('/home/mattyws/Documentos/DecisionTrees/CMP263_DecisionTree/resources/dadosBenchmark_validacaoAlgoritmoAD.csv', 'r') as csvfile:
-    #     spamreader = csv.reader(csvfile, delimiter=';')
-    #     for row in spamreader:
-    #         data.append(row[:-1])
-    #         labels.append(row[-1])
- #   data = pd.read_csv('/home/mattyws/Documentos/DecisionTrees/CMP263_DecisionTree/resources/dadosBenchmark_validacaoAlgoritmoAD.csv', sep=';')
- #   labels = data.drop(columns=data.columns[:-1])
-  #  data = data.drop(columns=data.columns[-1])
-   # tree = DecisionTree()
-  #  tree.train(data, labels)
-  #  print(data.iloc[0], labels.iloc[0])
-  #  print(tree.predict(data.iloc[[0]]))
-  #  tree.print()
-#=======
-#if __name__ == "__main__":
-# data = []
-    #labels = []
-    # columns = ["Class", "Alcohol", "Malic acid", "Ash", "Alcalinity of ash", "Magnesium", "Total phenols", "Flavanoids",
-              #            "Nonflavanoid phenols", "Proanthocyanins", "Color intensity", "Hue", "OD280/OD315 of diluted wines", "Proline"]
-    # data = pd.read_csv('/home/mattyws/Documentos/DecisionTrees/CMP263_DecisionTree/resources/Wine/wine.data.txt', sep=',')
-    #data.columns = columns
-    # labels = data.drop(columns=data.columns[1:])
-    #data = data.drop(columns=data.columns[0])
-    # tree = DecisionTree()
-    #   tree.train(data, labels)
- #   tree.print()
-#>>>>>>> f5f102089ae03d6fe8d07f1745036c994d366b68
+if __name__ == "__main__":
+    data = []
+    labels = []
+    columns = ["Class", "Alcohol", "Malic acid", "Ash", "Alcalinity of ash", "Magnesium", "Total phenols", "Flavanoids",
+               "Nonflavanoid phenols", "Proanthocyanins", "Color intensity", "Hue", "OD280/OD315 of diluted wines", "Proline"]
+    data = pd.read_csv('/home/mattyws/Documentos/DecisionTrees/CMP263_DecisionTree/resources/Wine/wine.data.txt', sep=',')
+    data.columns = columns
+    labels = data.drop(columns=data.columns[1:])
+    data = data.drop(columns=data.columns[0])
+    tree = DecisionTree()
+    tree.train(data, labels)
+    tree.print()
+    tree.print(graphviz=True)
