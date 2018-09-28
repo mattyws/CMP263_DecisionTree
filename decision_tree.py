@@ -3,13 +3,15 @@ import math
 import operator
 
 import pandas as pd
-#TODO 1: Comment
+import numpy as np
+
+
 class DecisionNode(object):
     """
     The nodes from a decision tree.
     Each node is composed by the column which the decision is done, and their child.
     """
-    def __init__(self, column, is_terminal=False):
+    def __init__(self, column, is_terminal=False, is_numeric=False):
         """
         Constructor for the DecisionNode.
         :param column: the column what the node will use to make its decision. If is a terminal, the value is the class that will be returned
@@ -19,6 +21,7 @@ class DecisionNode(object):
         self.is_terminal = is_terminal
         # If it's terminal, it doesn't have a child
         self.child = dict()
+        self.is_numeric = is_numeric
 
     def add_child(self, value, node):
         """
@@ -36,10 +39,21 @@ class DecisionNode(object):
         :return: the child node
         """
         if not self.is_terminal:
-            if value in self.child.keys():
-                return self.child[value]
+            if self.is_numeric:
+                keys = self.child.keys()
+                median = float(keys[0].split()[1])
+                if value < median:
+                    sign = "<"
+                else:
+                    sign = ">"
+                for key in keys:
+                    if sign in key:
+                        return self.child[key]
             else:
-                raise ValueError("Value {0} not in the tree!".format(value))
+                if value in self.child.keys():
+                    return self.child[value]
+                else:
+                    raise ValueError("Value {0} not in the tree!".format(value))
 
     def get_value(self):
         """
@@ -80,7 +94,6 @@ class DecisionTree(object):
         :param Y: the labels for the data.
         :param max_depth: the max depth to build the tree
         """
-        # TODO: normalize continuous data
         if len(X) == 0:
             # Data can't be empty
             raise ValueError("Data cannot be empty.")
@@ -131,10 +144,15 @@ class DecisionTree(object):
         # Get the higher information gain obtained
         best_info_column = max(info_gain_columns, key=info_gain_columns.get)
         print("============================== {0} ===============================".format(best_info_column))
-        # Get the uniques values existent
-        values = data[best_info_column].unique()
+        # Get the uniques values existent, if it's numeric, get the unique values for the cut
+        best_column_is_numeric = self.__is_numeric(data, best_info_column)
+        if best_column_is_numeric:
+            values = self.__numeric_column(data[best_info_column]).unique()
+            node = DecisionNode(best_info_column, is_numeric=True)
+        else:
+            values = data[best_info_column].unique()
+            node = DecisionNode(best_info_column)
         # Create a node for the best information gain column
-        node = DecisionNode(best_info_column)
         # Now we have the current depth where the new node created is
         depth += 1
         for value in values:
@@ -144,7 +162,7 @@ class DecisionTree(object):
             create the node for that snapshot.
             """
             # Get the new snapshot for that value
-            new_data, new_labels = self.__get_split(data, labels, best_info_column, value)
+            new_data, new_labels = self.__get_split(data, labels, best_info_column, value, is_numeric=best_column_is_numeric)
             # Calculate the entropy for the new snapshot
             value_entropy = self.__entropy(new_labels[new_labels.columns[0]].get_values())
             if (self.max_depth > depth and value_entropy != 0) or (self.max_depth <= depth and value_entropy == 0.5):
@@ -173,13 +191,16 @@ class DecisionTree(object):
         infoD = self.__entropy(labels[labels.columns[0]].get_values())
         info_columns = dict()
         for j in data.columns:
+            data_column = data[j]
+            if self.__is_numeric(data, j):
+                data_column = self.__numeric_column(data_column)
             # Compute the entropy for each column
             column_values = dict()
-            for i in range(len(data[j])):
+            for i in range(len(data_column)):
                 # Compute the appearance for each value in the column
-                if data[j][i] not in column_values.keys():
-                    column_values[data[j][i]] = []
-                column_values[data[j][i]].append(i)
+                if data_column[i] not in column_values.keys():
+                    column_values[data_column[i]] = []
+                column_values[data_column[i]].append(i)
             entropy_column = 0
             for key in column_values.keys():
                 # Compute the entropy for each value in the column
@@ -193,6 +214,16 @@ class DecisionTree(object):
             # Now compute the information gain for each column
              info_columns[i] = infoD - info_columns[i]
         return info_columns
+
+    def __numeric_column(self, column):
+        new_column = sorted(column)
+        if len(new_column)%2 == 0:
+            median = new_column[len(new_column)//2]
+        else:
+            median = (new_column[len(new_column)//2] + new_column[(len(new_column)//2)+1])/2
+        new_column = pd.cut(new_column, bins=[0, median, np.inf], labels=["<= {}".format(median), "> {}".format(median)], right=True)
+        return new_column
+
 
     def __entropy(self, column):
         """
@@ -210,7 +241,7 @@ class DecisionTree(object):
             entropy += -((label_values[key] / len(column)) * math.log2(label_values[key] / len(column)))
         return entropy
 
-    def __get_split(self, data, labels, row, value):
+    def __get_split(self, data, labels, row, value, is_numeric=False):
         """
         Get a split for the data given the row and the value.
         :param data: the data to use for split
@@ -220,7 +251,14 @@ class DecisionTree(object):
         :return: the splited data, labels
         """
         # Filter all data in the row that are equal to the value
-        new_data = data[data[row] == value]
+        if is_numeric:
+            median = float(value.split()[1])
+            if ">" in value:
+                new_data = data[data[row] > median]
+            else:
+                new_data = data[data[row] <= median]
+        else:
+            new_data = data[data[row] == value]
         # Get the labels for those filtered data, using it index
         new_labels = labels.iloc[new_data.index.tolist()]
         # Reset the indexes for both, that is done because pandas uses the index got from the original data
@@ -235,6 +273,9 @@ class DecisionTree(object):
         :return: the label with higher frequency
         """
         return labels[labels.columns[0]].value_counts().idxmax()
+
+    def __is_numeric(self, data, column):
+        return data[column].dtype == "int64" or data[column].dtype == "float64"
 
     def print(self):
         """
@@ -295,11 +336,12 @@ class DecisionTree(object):
 if __name__ == "__main__":
     data = []
     labels = []
-    data = pd.read_csv('/home/mattyws/Documentos/DecisionTrees/CMP263_DecisionTree/resources/dadosBenchmark_validacaoAlgoritmoAD.csv', sep=';')
-    labels = data.drop(columns=data.columns[:-1])
-    data = data.drop(columns=data.columns[-1])
+    columns = ["Class", "Alcohol", "Malic acid", "Ash", "Alcalinity of ash", "Magnesium", "Total phenols", "Flavanoids",
+               "Nonflavanoid phenols", "Proanthocyanins", "Color intensity", "Hue", "OD280/OD315 of diluted wines", "Proline"]
+    data = pd.read_csv('/home/mattyws/Documentos/DecisionTrees/CMP263_DecisionTree/resources/Wine/wine.data.txt', sep=',')
+    data.columns = columns
+    labels = data.drop(columns=data.columns[1:])
+    data = data.drop(columns=data.columns[0])
     tree = DecisionTree()
     tree.train(data, labels)
-    print(data.iloc[0], labels.iloc[0])
-    print(tree.predict(data.iloc[[0]]))
     tree.print()
