@@ -333,7 +333,7 @@ class DecisionTree(object):
 
 
 
-<<<<<<< HEAD
+#<<<<<<< HEAD
 #if __name__ == "__main__":
 #    data = []
 #    labels = []
@@ -350,17 +350,17 @@ class DecisionTree(object):
   #  print(data.iloc[0], labels.iloc[0])
   #  print(tree.predict(data.iloc[[0]]))
   #  tree.print()
-=======
-if __name__ == "__main__":
-    data = []
-    labels = []
-    columns = ["Class", "Alcohol", "Malic acid", "Ash", "Alcalinity of ash", "Magnesium", "Total phenols", "Flavanoids",
-               "Nonflavanoid phenols", "Proanthocyanins", "Color intensity", "Hue", "OD280/OD315 of diluted wines", "Proline"]
-    data = pd.read_csv('/home/mattyws/Documentos/DecisionTrees/CMP263_DecisionTree/resources/Wine/wine.data.txt', sep=',')
-    data.columns = columns
-    labels = data.drop(columns=data.columns[1:])
-    data = data.drop(columns=data.columns[0])
-    tree = DecisionTree()
-    tree.train(data, labels)
-    tree.print()
->>>>>>> f5f102089ae03d6fe8d07f1745036c994d366b68
+#=======
+#if __name__ == "__main__":
+# data = []
+    #labels = []
+    # columns = ["Class", "Alcohol", "Malic acid", "Ash", "Alcalinity of ash", "Magnesium", "Total phenols", "Flavanoids",
+              #            "Nonflavanoid phenols", "Proanthocyanins", "Color intensity", "Hue", "OD280/OD315 of diluted wines", "Proline"]
+    # data = pd.read_csv('/home/mattyws/Documentos/DecisionTrees/CMP263_DecisionTree/resources/Wine/wine.data.txt', sep=',')
+    #data.columns = columns
+    # labels = data.drop(columns=data.columns[1:])
+    #data = data.drop(columns=data.columns[0])
+    # tree = DecisionTree()
+    #   tree.train(data, labels)
+ #   tree.print()
+#>>>>>>> f5f102089ae03d6fe8d07f1745036c994d366b68
