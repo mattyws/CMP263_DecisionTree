@@ -259,19 +259,19 @@ class DecisionTree(object):
 
 
 
-if __name__ == "__main__":
-    data = []
-    labels = []
+#if __name__ == "__main__":
+#    data = []
+#    labels = []
     # with open('/home/mattyws/Documentos/DecisionTrees/CMP263_DecisionTree/resources/dadosBenchmark_validacaoAlgoritmoAD.csv', 'r') as csvfile:
     #     spamreader = csv.reader(csvfile, delimiter=';')
     #     for row in spamreader:
     #         data.append(row[:-1])
     #         labels.append(row[-1])
-    data = pd.read_csv('/home/mattyws/Documentos/DecisionTrees/CMP263_DecisionTree/resources/dadosBenchmark_validacaoAlgoritmoAD.csv', sep=';')
-    labels = data.drop(columns=data.columns[:-1])
-    data = data.drop(columns=data.columns[-1])
-    tree = DecisionTree()
-    tree.train(data, labels)
-    print(data.iloc[0], labels.iloc[0])
-    print(tree.predict(data.iloc[[0]]))
-    tree.print()
+ #   data = pd.read_csv('/home/mattyws/Documentos/DecisionTrees/CMP263_DecisionTree/resources/dadosBenchmark_validacaoAlgoritmoAD.csv', sep=';')
+ #   labels = data.drop(columns=data.columns[:-1])
+  #  data = data.drop(columns=data.columns[-1])
+   # tree = DecisionTree()
+  #  tree.train(data, labels)
+  #  print(data.iloc[0], labels.iloc[0])
+  #  print(tree.predict(data.iloc[[0]]))
+  #  tree.print()
