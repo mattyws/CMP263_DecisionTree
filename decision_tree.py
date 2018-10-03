@@ -110,24 +110,25 @@ class DecisionTree(object):
         :param data: the data to predict the labels for.
         :return: a class if only one row is given, a array of classes if a set of rows is given.
         """
-        if data.shape == (1, len(data.columns)):
-            # If the data has only one row, just return the output of the tree
-            node = self.root
-            while not node.is_terminal:
-                # Do the walk on the tree until the node is a terminal node
-                node = node.get_child_node(data[node.column][0])
-            #Return the value of the terminal node
-            return node.get_value()
-        else:
-            # If has more than one row, do the predicting for all data given
-            classes = []
-            for index, row in data.iterrows():
+        if data is not None and len(data) != 0:
+            if data.shape == (1, len(data.columns)):
+                # If the data has only one row, just return the output of the tree
                 node = self.root
                 while not node.is_terminal:
-                    node = node.get_child_node(row[node.column])
-                classes.append(node.get_value())
-            # Return all classes predicted for each data
-            return classes
+                    # Do the walk on the tree until the node is a terminal node
+                    node = node.get_child_node(data[node.column][0])
+                #Return the value of the terminal node
+                return node.get_value()
+            else:
+                # If has more than one row, do the predicting for all data given
+                classes = []
+                for index, row in data.iterrows():
+                    node = self.root
+                    while not node.is_terminal:
+                        node = node.get_child_node(row[node.column])
+                    classes.append(node.get_value())
+                # Return all classes predicted for each data
+                return classes
 
 
     def __build(self, data, labels, depth=0, parent=None):

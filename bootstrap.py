@@ -11,32 +11,21 @@ class Bootstrap:
         :param data: dados originais contendo a coluna de labels
         :return: dados e labels gerados a partir do bootstrap
         """
-        #print("labels em bootstrap")
-        #print(labels.head(5))
-
-        data = pd.concat([data, labels], axis=1)
-        #print("imprimindo data que chegou em make_bootstrap")
-        #print(data.head(2))
 
         # tamanho do meu DataFrame
         tam = len(data)
 
         # crio novo DataFrame
         new_df = pd.DataFrame()
+        new_labels = pd.DataFrame()
 
         # cria bootstrap como um DataFrame de mesmo tamanho dos dados originais
         for i in range(tam):
-            new_df = new_df.append(data.iloc[[random.randrange(tam)]], ignore_index=True)
+            rand_num = random.randrange(tam)
+            new_df = new_df.append(data.iloc[rand_num], ignore_index=True)
+            new_labels = new_labels.append(labels.iloc[rand_num], ignore_index=True)
 
-        labels = new_df.iloc[:, len(new_df.columns)-1]
-        new_df = new_df.drop(new_df[new_df.columns[len(new_df.columns) - 1:len(new_df.columns)]], axis=1)
-
-        #print("Imprimindo labels gerados no bootstrap")
-        #print(labels.head(2))
-        #print("Imprimindo new_df do bootstrap")
-        #print(new_df.head(2))
-
-        return new_df, labels
+        return new_df, new_labels
 
 
     @staticmethod
