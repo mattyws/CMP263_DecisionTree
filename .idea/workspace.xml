@@ -2,10 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="6d9f80ef-8ba3-4017-a8de-6f2db3a3f8a8" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/CMP263_DecisionTree.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/CMP263_DecisionTree.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/bootstrap.py" beforeDir="false" afterPath="$PROJECT_DIR$/bootstrap.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/decision_tree.py" beforeDir="false" afterPath="$PROJECT_DIR$/decision_tree.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/program.py" beforeDir="false" afterPath="$PROJECT_DIR$/program.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/random_forest.py" beforeDir="false" afterPath="$PROJECT_DIR$/random_forest.py" afterDir="false" />
@@ -22,37 +19,39 @@
       <usages-collector id="statistics.file.extensions.open">
         <counts>
           <entry key="md" value="1" />
-          <entry key="png" value="11" />
-          <entry key="py" value="6" />
+          <entry key="png" value="12" />
+          <entry key="py" value="9" />
+          <entry key="result" value="2" />
           <entry key="txt" value="8" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.types.open">
         <counts>
-          <entry key="Image" value="11" />
+          <entry key="Image" value="12" />
           <entry key="Markdown" value="1" />
-          <entry key="PLAIN_TEXT" value="8" />
-          <entry key="Python" value="6" />
+          <entry key="PLAIN_TEXT" value="10" />
+          <entry key="Python" value="9" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.extensions.edit">
         <counts>
-          <entry key="py" value="5957" />
-          <entry key="txt" value="123" />
+          <entry key="py" value="9009" />
+          <entry key="txt" value="204" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.types.edit">
         <counts>
-          <entry key="PLAIN_TEXT" value="123" />
-          <entry key="Python" value="5957" />
+          <entry key="PLAIN_TEXT" value="204" />
+          <entry key="Python" value="9009" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.lifecycle.project">
         <counts>
-          <entry key="project.closed" value="2" />
+          <entry key="project.closed" value="3" />
           <entry key="project.open.time.0" value="1" />
           <entry key="project.open.time.8" value="1" />
-          <entry key="project.opened" value="2" />
+          <entry key="project.open.time.9" value="1" />
+          <entry key="project.opened" value="3" />
         </counts>
       </usages-collector>
     </session>
@@ -120,12 +119,28 @@
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
       <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/program.py">
+        <entry file="file://$PROJECT_DIR$/decision_tree.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="481">
-              <caret line="33" column="38" lean-forward="true" selection-start-line="33" selection-start-column="38" selection-end-line="33" selection-end-column="38" />
+            <state relative-caret-position="-2471">
+              <caret line="202" selection-start-line="202" selection-end-line="202" />
               <folding>
-                <element signature="e#0#19#0" expanded="true" />
+                <element signature="e#0#10#0" expanded="true" />
+                <marker date="1538686125929" expanded="true" signature="9320:9327" ph="..." />
+                <marker date="1538686125929" expanded="true" signature="9355:9364" ph="..." />
+                <marker date="1538686125929" expanded="true" signature="11725:11811" ph="..." />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/random_forest.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="171">
+              <caret line="33" column="82" selection-start-line="33" selection-start-column="82" selection-end-line="33" selection-end-column="82" />
+              <folding>
+                <element signature="e#0#16#0" expanded="true" />
+                <marker date="1538686679851" expanded="true" signature="95:96" ph="..." />
               </folding>
             </state>
           </provider>
@@ -135,37 +150,21 @@
         <entry file="file://$PROJECT_DIR$/bootstrap.py">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="414">
-              <caret line="23" column="44" selection-start-line="23" selection-start-column="44" selection-end-line="23" selection-end-column="44" />
-              <folding>
-                <element signature="e#0#19#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/decision_tree.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-9">
-              <caret line="269" column="46" lean-forward="true" selection-start-line="269" selection-start-column="46" selection-end-line="269" selection-end-column="46" />
-              <folding>
-                <element signature="e#0#10#0" expanded="true" />
-                <marker date="1538580488041" expanded="true" signature="9267:9274" ph="..." />
-                <marker date="1538580488041" expanded="true" signature="9302:9311" ph="..." />
-                <marker date="1538580488041" expanded="true" signature="11672:11758" ph="..." />
-              </folding>
+              <caret line="25" column="64" selection-start-line="25" selection-start-column="64" selection-end-line="25" selection-end-column="64" />
             </state>
           </provider>
         </entry>
       </file>
       <file pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/random_forest.py">
+        <entry file="file://$PROJECT_DIR$/program.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="442">
-              <caret line="59" column="16" lean-forward="true" selection-start-line="59" selection-start-column="16" selection-end-line="59" selection-end-column="16" />
+            <state relative-caret-position="459">
+              <caret line="137" column="55" selection-start-line="137" selection-start-column="55" selection-end-line="137" selection-end-column="55" />
               <folding>
-                <element signature="e#0#16#0" expanded="true" />
-                <marker date="1538585438581" expanded="true" signature="95:96" ph="..." />
+                <element signature="e#0#9#0" expanded="true" />
+                <marker date="1538690551448" expanded="true" signature="198:571" ph="..." />
+                <marker date="1538690551448" expanded="true" signature="1042:1235" ph="..." />
+                <marker date="1538690551448" expanded="true" signature="1862:1966" ph="..." />
               </folding>
             </state>
           </provider>
@@ -186,6 +185,7 @@
       <find>numeri</find>
       <find>data+</find>
       <find>0</find>
+      <find>float</find>
     </findStrings>
   </component>
   <component name="Git.Settings">
@@ -196,10 +196,10 @@
     <option name="CHANGED_PATHS">
       <list>
         <option value="$PROJECT_DIR$/kfold.py" />
-        <option value="$PROJECT_DIR$/bootstrap.py" />
-        <option value="$PROJECT_DIR$/program.py" />
         <option value="$PROJECT_DIR$/decision_tree.py" />
         <option value="$PROJECT_DIR$/random_forest.py" />
+        <option value="$PROJECT_DIR$/bootstrap.py" />
+        <option value="$PROJECT_DIR$/program.py" />
       </list>
     </option>
   </component>
@@ -215,6 +215,7 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
+      <pane id="Scope" />
       <pane id="ProjectPane">
         <subPane>
           <expand>
@@ -222,11 +223,26 @@
               <item name="CMP263_DecisionTree" type="b2602c69:ProjectViewProjectNode" />
               <item name="CMP263_DecisionTree" type="462c0819:PsiDirectoryNode" />
             </path>
+            <path>
+              <item name="CMP263_DecisionTree" type="b2602c69:ProjectViewProjectNode" />
+              <item name="CMP263_DecisionTree" type="462c0819:PsiDirectoryNode" />
+              <item name="forest_results" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="CMP263_DecisionTree" type="b2602c69:ProjectViewProjectNode" />
+              <item name="CMP263_DecisionTree" type="462c0819:PsiDirectoryNode" />
+              <item name="forest_results" type="462c0819:PsiDirectoryNode" />
+              <item name="forest_0" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="CMP263_DecisionTree" type="b2602c69:ProjectViewProjectNode" />
+              <item name="CMP263_DecisionTree" type="462c0819:PsiDirectoryNode" />
+              <item name="resources" type="462c0819:PsiDirectoryNode" />
+            </path>
           </expand>
           <select />
         </subPane>
       </pane>
-      <pane id="Scope" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -288,13 +304,36 @@
       <option name="INPUT_FILE" value="" />
       <method v="2" />
     </configuration>
+    <configuration name="random_forest" type="PythonConfigurationType" factoryName="Python" temporary="true">
+      <module name="CMP263_DecisionTree" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/random_forest.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
     <list>
       <item itemvalue="Python.decision_tree" />
       <item itemvalue="Python.program" />
+      <item itemvalue="Python.random_forest" />
     </list>
     <recent_temporary>
       <list>
         <item itemvalue="Python.program" />
+        <item itemvalue="Python.random_forest" />
         <item itemvalue="Python.decision_tree" />
       </list>
     </recent_temporary>
@@ -324,12 +363,12 @@
       <option name="project" value="LOCAL" />
       <updated>1538147240758</updated>
     </task>
-    <task id="LOCAL-00003" summary="Adicionando split nas árvores de decisão">
-      <created>1536952520539</created>
+    <task id="LOCAL-00003" summary="Terminando classe da RandomForest.">
+      <created>1538596200340</created>
       <option name="number" value="00003" />
       <option name="presentableId" value="LOCAL-00003" />
       <option name="project" value="LOCAL" />
-      <updated>1536952520539</updated>
+      <updated>1538596200340</updated>
     </task>
     <task id="LOCAL-00004" summary="Adicionando montagem da árvore">
       <created>1537198266394</created>
@@ -345,7 +384,7 @@
       <option name="project" value="LOCAL" />
       <updated>1537295945531</updated>
     </task>
-    <option name="localTasksCounter" value="3" />
+    <option name="localTasksCounter" value="4" />
     <servers />
   </component>
   <component name="TodoView" selected-index="4">
@@ -361,18 +400,18 @@
     <frame x="64" y="-11" width="1857" height="1092" extended-state="6" />
     <editor active="true" />
     <layout>
-      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.25" />
+      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.24945416" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info id="Favorites" order="2" side_tool="true" />
       <window_info anchor="bottom" id="Message" order="0" />
       <window_info anchor="bottom" id="Find" order="1" weight="0.3294979" />
-      <window_info anchor="bottom" id="Run" order="2" sideWeight="0.49945414" weight="0.3493724" />
+      <window_info anchor="bottom" id="Run" order="2" sideWeight="0.49945414" visible="true" weight="0.3493724" />
       <window_info anchor="bottom" id="Debug" order="3" weight="0.39958158" />
       <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
       <window_info anchor="bottom" id="TODO" order="6" weight="0.3294979" />
-      <window_info anchor="bottom" id="Version Control" order="7" show_stripe_button="false" />
-      <window_info active="true" anchor="bottom" id="Terminal" order="8" visible="true" weight="0.3294979" />
+      <window_info anchor="bottom" id="Version Control" order="7" />
+      <window_info anchor="bottom" id="Terminal" order="8" weight="0.32857144" />
       <window_info anchor="bottom" id="Event Log" order="9" sideWeight="0.50054586" side_tool="true" weight="0.3294979" />
       <window_info anchor="bottom" id="Python Console" order="10" />
       <window_info anchor="right" id="Commander" order="0" weight="0.4" />
@@ -407,7 +446,8 @@
   <component name="VcsManagerConfiguration">
     <MESSAGE value="Terminando o algoritmo de árvore de decisão" />
     <MESSAGE value="Adicionando a capacidade de trabalhar com dados contínuos" />
-    <option name="LAST_COMMIT_MESSAGE" value="Adicionando a capacidade de trabalhar com dados contínuos" />
+    <MESSAGE value="Terminando classe da RandomForest." />
+    <option name="LAST_COMMIT_MESSAGE" value="Terminando classe da RandomForest." />
   </component>
   <component name="editorHistoryManager">
     <entry file="file://$PROJECT_DIR$/resources/dadosBenchmark_validacaoAlgoritmoAD.csv">
@@ -430,21 +470,12 @@
         <state relative-caret-position="-667" />
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/resources/BreastCancer/breast-cancer-wisconsin.data.txt">
-      <provider selected="true" editor-type-id="text-editor" />
-    </entry>
-    <entry file="file://$PROJECT_DIR$/resources/BreastCancer/wdbc.data.txt">
-      <provider selected="true" editor-type-id="text-editor" />
-    </entry>
     <entry file="file://$APPLICATION_HOME_DIR$/helpers/pydev/_pydev_imps/_pydev_execfile.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="306">
           <caret line="17" selection-start-line="17" selection-end-line="17" />
         </state>
       </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/resources/Ionosphere/ionosphere.data.txt">
-      <provider selected="true" editor-type-id="text-editor" />
     </entry>
     <entry file="file://$PROJECT_DIR$/resources/Wine/wine.names.txt">
       <provider selected="true" editor-type-id="text-editor">
@@ -472,12 +503,23 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/program.py">
+    <entry file="file://$PROJECT_DIR$/benchmark_tree/tree.png">
+      <provider selected="true" editor-type-id="images" />
+    </entry>
+    <entry file="file:///usr/local/lib/python3.5/dist-packages/pandas/core/series.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="481">
-          <caret line="33" column="38" lean-forward="true" selection-start-line="33" selection-start-column="38" selection-end-line="33" selection-end-column="38" />
+        <state relative-caret-position="197">
+          <caret line="622" selection-start-line="622" selection-end-line="622" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/random_forest.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="171">
+          <caret line="33" column="82" selection-start-line="33" selection-start-column="82" selection-end-line="33" selection-end-column="82" />
           <folding>
-            <element signature="e#0#19#0" expanded="true" />
+            <element signature="e#0#16#0" expanded="true" />
+            <marker date="1538686679851" expanded="true" signature="95:96" ph="..." />
           </folding>
         </state>
       </provider>
@@ -485,42 +527,38 @@
     <entry file="file://$PROJECT_DIR$/bootstrap.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="414">
-          <caret line="23" column="44" selection-start-line="23" selection-start-column="44" selection-end-line="23" selection-end-column="44" />
-          <folding>
-            <element signature="e#0#19#0" expanded="true" />
-          </folding>
+          <caret line="25" column="64" selection-start-line="25" selection-start-column="64" selection-end-line="25" selection-end-column="64" />
         </state>
       </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/tree_2.png">
-      <provider selected="true" editor-type-id="images" />
-    </entry>
-    <entry file="file://$PROJECT_DIR$/tree_1.png">
-      <provider selected="true" editor-type-id="images" />
-    </entry>
-    <entry file="file://$PROJECT_DIR$/tree_0.png">
-      <provider selected="true" editor-type-id="images" />
     </entry>
     <entry file="file://$PROJECT_DIR$/decision_tree.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-9">
-          <caret line="269" column="46" lean-forward="true" selection-start-line="269" selection-start-column="46" selection-end-line="269" selection-end-column="46" />
+        <state relative-caret-position="-2471">
+          <caret line="202" selection-start-line="202" selection-end-line="202" />
           <folding>
             <element signature="e#0#10#0" expanded="true" />
-            <marker date="1538580488041" expanded="true" signature="9267:9274" ph="..." />
-            <marker date="1538580488041" expanded="true" signature="9302:9311" ph="..." />
-            <marker date="1538580488041" expanded="true" signature="11672:11758" ph="..." />
+            <marker date="1538686125929" expanded="true" signature="9320:9327" ph="..." />
+            <marker date="1538686125929" expanded="true" signature="9355:9364" ph="..." />
+            <marker date="1538686125929" expanded="true" signature="11725:11811" ph="..." />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/random_forest.py">
+    <entry file="file://$PROJECT_DIR$/forest_results/forest_0/result">
+      <provider selected="true" editor-type-id="text-editor" />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/forest_results/result">
+      <provider selected="true" editor-type-id="text-editor" />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/program.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="442">
-          <caret line="59" column="16" lean-forward="true" selection-start-line="59" selection-start-column="16" selection-end-line="59" selection-end-column="16" />
+        <state relative-caret-position="459">
+          <caret line="137" column="55" selection-start-line="137" selection-start-column="55" selection-end-line="137" selection-end-column="55" />
           <folding>
-            <element signature="e#0#16#0" expanded="true" />
-            <marker date="1538585438581" expanded="true" signature="95:96" ph="..." />
+            <element signature="e#0#9#0" expanded="true" />
+            <marker date="1538690551448" expanded="true" signature="198:571" ph="..." />
+            <marker date="1538690551448" expanded="true" signature="1042:1235" ph="..." />
+            <marker date="1538690551448" expanded="true" signature="1862:1966" ph="..." />
           </folding>
         </state>
       </provider>

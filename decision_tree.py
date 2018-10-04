@@ -40,7 +40,7 @@ class DecisionNode(object):
         """
         if not self.is_terminal:
             if self.is_numeric:
-                keys = self.child.keys()
+                keys = list(self.child.keys())
                 median = float(keys[0].split()[1])
                 if value < median:
                     sign = "<"
@@ -116,7 +116,7 @@ class DecisionTree(object):
                 node = self.root
                 while not node.is_terminal:
                     # Do the walk on the tree until the node is a terminal node
-                    node = node.get_child_node(data[node.column][0])
+                    node = node.get_child_node(data[node.column].item())
                 #Return the value of the terminal node
                 return node.get_value()
             else:
@@ -125,6 +125,7 @@ class DecisionTree(object):
                 for index, row in data.iterrows():
                     node = self.root
                     while not node.is_terminal:
+                        print(node.column)
                         node = node.get_child_node(row[node.column])
                     classes.append(node.get_value())
                 # Return all classes predicted for each data
@@ -355,13 +356,9 @@ class DecisionTree(object):
 if __name__ == "__main__":
     data = []
     labels = []
-    columns = ["Class", "Alcohol", "Malic acid", "Ash", "Alcalinity of ash", "Magnesium", "Total phenols", "Flavanoids",
-               "Nonflavanoid phenols", "Proanthocyanins", "Color intensity", "Hue", "OD280/OD315 of diluted wines", "Proline"]
-    data = pd.read_csv('/home/mattyws/Documentos/DecisionTrees/CMP263_DecisionTree/resources/Wine/wine.data.txt', sep=',')
-    data.columns = columns
-    labels = data.drop(columns=data.columns[1:])
-    data = data.drop(columns=data.columns[0])
+    data = pd.read_csv('/home/mattyws/Documentos/DecisionTrees/CMP263_DecisionTree/resources/dadosBenchmark_validacaoAlgoritmoAD.csv', sep=';')
+    labels = data.drop(columns=data.columns[:-1])
+    data = data.drop(columns=data.columns[-1])
     tree = DecisionTree()
     tree.train(data, labels)
-    tree.print()
-    tree.print(graphviz=True)
+    tree.print(graphviz=True, filename="benchmark_tree/tree")

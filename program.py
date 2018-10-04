@@ -1,3 +1,6 @@
+import os
+import pickle
+
 import pandas as pd
 import random
 
@@ -5,6 +8,61 @@ import bootstrap
 import decision_tree
 import kfold
 from random_forest import RandomForest
+import collections
+
+def recall(true, predicted):
+    hit = [x for x, y in zip(true, predicted) if x == y]
+    true_values_count = collections.Counter(true)
+    hit_count = collections.Counter(hit)
+    recalls = {}
+    for key in true_values_count.keys():
+        if key in hit_count.keys():
+            recalls[key] = hit_count[key] / true_values_count[key]
+        else:
+            recalls[key] = 0
+    return recalls
+
+def precision(true, predicted):
+    hit = [x for x, y in zip(true, predicted) if x == y]
+    predicted_values_count = collections.Counter(predicted)
+    hit_count = collections.Counter(hit)
+    precisions = {}
+    for key in predicted_values_count.keys():
+        if key in hit_count.keys():
+            precisions[key] = hit_count[key] / predicted_values_count[key]
+        else :
+            precisions[key] = 0
+    return precisions
+
+def macro_recall(true, predicted):
+    recalls = recall(true, predicted)
+    macro_recall = 0
+    for key in recalls.keys():
+        macro_recall += recalls[key]
+    macro_recall /= len(recalls.keys())
+    return macro_recall
+
+def macro_precision(true, predicted):
+    precisions = precision(true, predicted)
+    macro_precision = 0
+    for key in precisions.keys():
+        macro_precision += precisions[key]
+    macro_precision /= len(precisions.keys())
+    return macro_precision
+
+def f1_score(true, predicted):
+    precisions = precision(true, predicted)
+    recalls = recall(true, predicted)
+    f1_scores = {}
+    for key in precisions.keys():
+        f1_scores[key] = 2 * ( (precisions[key]*recalls[key]) / (precisions[key]) + recalls[key] )
+    return f1_scores
+
+def macro_f1_score(true, predicted):
+    macro_p = macro_precision(true, predicted)
+    macro_r = macro_recall(true, predicted)
+    return 2 * ((macro_p * macro_r)/(macro_p + macro_r))
+
 
 data_wine = []
 labels_wine = []
@@ -24,11 +82,61 @@ nseed = 100
 random.seed(nseed)
 
 k = 10
-
 kf = kfold.KFold()
 kf.make_kfold(data_wine, labels_wine, k, nseed)
 
-data_test, labels_test, data_train, labels_train = kf.get_data_test_train()
+directory_results = "forest_results"
+directory_prefix = directory_results+"/forest_"
 
-forest = RandomForest()
-forest.train(data_train, labels_train)
+folds_precision = []
+folds_recall = []
+folds_f1 = []
+for i in range(k):
+    print("======= Fold {} ======".format(i))
+    fold_directory = directory_prefix+str(i)
+    if not os.path.exists(fold_directory):
+        os.makedirs(fold_directory)
+
+    data_test, labels_test, data_train, labels_train = kf.get_data_test_train()
+
+    forest = RandomForest()
+    forest.train(data_train, labels_train)
+    # Printing trees
+    forest.print_forest_trees(graphviz=True, sufix=fold_directory+"/tree")
+
+
+    predictions = forest.predict(data_test)
+    macro_p = macro_precision(labels_test[labels_test.columns[0]].tolist(), predictions)
+    macro_r = macro_recall(labels_test[labels_test.columns[0]].tolist(), predictions)
+    macro_f1 = macro_f1_score(labels_test[labels_test.columns[0]].tolist(), predictions)
+    folds_precision.append(macro_p)
+    folds_recall.append(macro_r)
+    folds_f1.append(macro_f1)
+
+    results_text = ""
+    results_text += "Ground truth: {}\n".format(labels_test[labels_test.columns[0]].tolist())
+    results_text += "Predictions: {}\n".format(predictions)
+    results_text += "Precision per class: {}\n".format(precision(labels_test[labels_test.columns[0]].tolist(), predictions))
+    results_text += "Recall per class: {}\n".format(recall(labels_test[labels_test.columns[0]].tolist(), predictions))
+    results_text += "F1 Scrore per class: {}\n".format(f1_score(labels_test[labels_test.columns[0]].tolist(), predictions))
+    results_text += "Macro precision: {0:.2f}%\n".format(macro_p * 100)
+    results_text += "Macro recall: {0:.2f}%\n".format(macro_r * 100)
+    results_text += "Macro F1 Score: {0:.2f}%\n".format(macro_f1 * 100)
+
+    with open(fold_directory+"/result", "w") as text_file:
+        text_file.write(results_text)
+
+    with open(fold_directory+'/forest.pkl', 'wb') as output:
+        pickle.dump(forest, output, pickle.HIGHEST_PROTOCOL)
+
+    print(results_text)
+    break
+
+with open(directory_results+"/result", "w") as result_file:
+    result_file.write("Folds precision: {}\n".format(folds_precision))
+    result_file.write("Folds recall: {}\n".format(folds_recall))
+    result_file.write("Folds f1 score: {}\n".format(folds_f1))
+
+    result_file.write("Folds precision average: {0:.2f}%\n".format( (sum(folds_precision) / len(folds_precision)) *100 ))
+    result_file.write("Folds recall average: {0:.2f}%\n".format( (sum(folds_recall) / len(folds_recall)) * 100 ))
+    result_file.write("Folds f1 score average: {0:.2f}%\n".format( (sum(folds_f1) / len(folds_f1)) *100 ))

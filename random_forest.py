@@ -31,7 +31,7 @@ class RandomForest(object):
                 for index, row in data.iterrows():
                     predicted_classes = []
                     for tree in self.trees:
-                        predicted_classes.append(tree.predict(data))
+                        predicted_classes.append(tree.predict(data.iloc[[index]]))
                     classes.append(mode(predicted_classes))
                 return classes
 
