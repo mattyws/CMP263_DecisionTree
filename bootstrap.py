@@ -5,7 +5,7 @@ import math
 class Bootstrap:
 
     @staticmethod
-    def make_bootstrap(data, labels):
+    def make_bootstrap(data, labels, seed):
         """
         Cria o bootstrap a partir dos dados originais
         :param data: dados originais contendo a coluna de labels
@@ -14,6 +14,7 @@ class Bootstrap:
 
         # tamanho do meu DataFrame
         tam = len(data)
+        random.seed(seed)
 
         # crio novo DataFrame
         new_df = pd.DataFrame()
@@ -29,7 +30,7 @@ class Bootstrap:
 
 
     @staticmethod
-    def select_columns(data, m = -1):
+    def select_columns(data, seed, m = -1):
         """
         Seleciona quais as colunas do bootstrap devem ser verificadas pela floresta
         :param data: a base de dados contendo a coluna sem labels
@@ -37,6 +38,7 @@ class Bootstrap:
         """
         # mostra o número de colunas que há no meu DataFrame
         total_atr = len(data.columns)
+        random.seed(seed)
 
         # caso o usuário não coloque nenhum valor para m, então ele irá selecionar a raiz quadrada do total de colunas
         if (m == -1):

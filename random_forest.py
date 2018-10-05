@@ -1,3 +1,7 @@
+import collections
+
+import random
+
 import bootstrap
 import decision_tree
 from statistics import mode
@@ -8,13 +12,14 @@ class RandomForest(object):
     def __init__(self):
         self.trees = []
 
-    def train(self, X, Y, num_trees=3, max_depth=3):
+    def train(self, X, Y, bootstrap_seed=100, num_trees=3, max_depth=3):
         for i in range(num_trees):
-            tree_bootstrap, labels = bootstrap.Bootstrap.make_bootstrap(X, Y)
-            tree_bootstrap = bootstrap.Bootstrap.select_columns(tree_bootstrap)
+            tree_bootstrap, labels = bootstrap.Bootstrap.make_bootstrap(X, Y, bootstrap_seed)
+            tree_bootstrap = bootstrap.Bootstrap.select_columns(tree_bootstrap, bootstrap_seed)
             tree = decision_tree.DecisionTree()
-            tree.train(tree_bootstrap, labels)
+            tree.train(tree_bootstrap, labels, max_depth=max_depth)
             self.trees.append(tree)
+            bootstrap_seed+=10
             # tree.print(graphviz=True, filename="tree_{}".format(i))
 
     def predict(self, data):
@@ -24,7 +29,7 @@ class RandomForest(object):
                 predicted_classes = []
                 for tree in self.trees:
                     predicted_classes.append(tree.predict(data))
-                return mode(predicted_classes)
+                return self.__majority_voting(predicted_classes)
             else:
                 # If has more than one row, do the predicting for all data given
                 classes = []
@@ -32,8 +37,24 @@ class RandomForest(object):
                     predicted_classes = []
                     for tree in self.trees:
                         predicted_classes.append(tree.predict(data.iloc[[index]]))
-                    classes.append(mode(predicted_classes))
+                    classes.append(self.__majority_voting(predicted_classes))
                 return classes
+
+    def __majority_voting(self, predictions):
+        count = collections.Counter(predictions)
+        higher_class = None
+        higher_class_count = 0
+        for key in count.keys():
+            if higher_class_count < count[key]:
+                higher_class_count = count[key]
+                higher_class = key
+            elif higher_class_count == count[key]:
+                #if a tie happens, flip a coin, if the coin is odd, use the count[key]
+                if  random.randint(0, 9) % 2 == 1:
+                    higher_class_count = count[key]
+                    higher_class = key
+        return higher_class
+
 
     def get_trees_prediction(self, data):
         if data is not None and len(data) != 0:
