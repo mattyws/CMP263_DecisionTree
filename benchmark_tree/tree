@@ -1,0 +1,18 @@
+digraph {
+	node [shape=box]
+	0 [label=Tempo]
+	1 [label=Ventoso]
+	0 -> 1 [label=Chuvoso]
+	2 [label=Sim]
+	0 -> 2 [label=Nublado]
+	3 [label=Umidade]
+	0 -> 3 [label=Ensolarado]
+	4 [label=Nao]
+	1 -> 4 [label=Verdadeiro]
+	5 [label=Sim]
+	1 -> 5 [label=Falso]
+	6 [label=Nao]
+	3 -> 6 [label=Alta]
+	7 [label=Sim]
+	3 -> 7 [label=Normal]
+}

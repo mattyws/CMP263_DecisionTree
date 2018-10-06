@@ -99,8 +99,8 @@ class KFold:
                 data_train = pd.concat([data_train, self.data_kfold[j]])
                 labels_train = pd.concat([labels_train, self.labels_kfold[j]])
 
-        return (data_test, labels_test, data_train, labels_train)
+        return data_test, labels_test, data_train, labels_train
 
 
-    def update_indice_teste(self):
+    def update_test_index(self):
         self.indice_teste += 1

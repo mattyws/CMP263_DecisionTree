@@ -56,7 +56,10 @@ def f1_score(true, predicted):
     recalls = recall(true, predicted)
     f1_scores = {}
     for key in precisions.keys():
-        f1_scores[key] = 2 * ( (precisions[key]*recalls[key]) / (precisions[key]) + recalls[key] )
+        if precisions[key] == 0 and recalls[key] == 0:
+            f1_scores[key] = 0
+        else:
+            f1_scores[key] = 2 * ( (precisions[key]*recalls[key]) / (precisions[key]) + recalls[key] )
     return f1_scores
 
 def macro_f1_score(true, predicted):
@@ -75,13 +78,24 @@ def macro_f1_score(true, predicted):
 #
 #
 # labels = data[data.columns[0:1]]
-# data = data.drop(data[data.columns[0:1]], axis = 1)
+# data = data.drop(data[data.columns[0:1]], axis=1)
 
 #IONOSPHERE
-data = pd.read_csv("resources/Ionosphere/ionosphere.data.txt", header=None, sep=',')
+# data = pd.read_csv("resources/Ionosphere/ionosphere.data.txt", header=None, sep=',', prefix='H')
+# labels = data.drop(columns=data.columns[:-1])
+# data = data.drop(columns=data.columns[-1])
+
+#BrestCancer
+data = pd.read_csv("resources/BreastCancer/breast-cancer-wisconsin.data.txt", header=None, sep=',', prefix='H')
+data = data[data['H6'] != '?']
+data['H6'] = data['H6'].apply(pd.to_numeric)
+data = data.dropna()
+data = data.reset_index()
 labels = data.drop(columns=data.columns[:-1])
 data = data.drop(columns=data.columns[-1])
-# A column on ionosphere has its value all set to 0, drop it
+#Drop first column because they are ID's
+data = data.drop(columns=data.columns[0])
+
 
 # semente para o número aleatório
 nseed = 100
@@ -117,6 +131,7 @@ with open(directory_results+"/result.csv", 'w') as csv_result_file:
                 os.makedirs(fold_directory)
 
             data_test, labels_test, data_train, labels_train = kf.get_data_test_train()
+            kf.update_test_index()
             forest = RandomForest()
             forest.train(data_train, labels_train, nseed, num_trees=num_trees)
             # Printing trees

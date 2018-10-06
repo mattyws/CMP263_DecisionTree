@@ -50,7 +50,7 @@ class RandomForest(object):
                 higher_class = key
             elif higher_class_count == count[key]:
                 #if a tie happens, flip a coin, if the coin is odd, use the count[key]
-                if  random.randint(0, 9) % 2 == 1:
+                if random.randint(0, 9) % 2 == 1:
                     higher_class_count = count[key]
                     higher_class = key
         return higher_class

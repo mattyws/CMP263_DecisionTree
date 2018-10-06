@@ -125,7 +125,6 @@ class DecisionTree(object):
                 for index, row in data.iterrows():
                     node = self.root
                     while not node.is_terminal:
-                        print(node.column)
                         node = node.get_child_node(row[node.column])
                     classes.append(node.get_value())
                 # Return all classes predicted for each data
@@ -240,15 +239,16 @@ class DecisionTree(object):
             median = new_column[len(new_column)//2]
         else:
             median = (new_column[len(new_column)//2] + new_column[(len(new_column)//2)+1])/2
-        new_column = pd.cut(column, bins=[0, median, np.inf], labels=["<= {}".format(median), "> {}".format(median)], right=True)
+        new_column = pd.cut(column, bins=[-np.inf, median, np.inf], labels=["<= {}".format(median), "> {}".format(median)],
+                            right=True)
         return new_column
 
-    def __get_split(self, data, labels, row, value, is_numeric=False):
+    def __get_split(self, data, labels, column, value, is_numeric=False):
         """
         Get a split for the data given the row and the value.
         :param data: the data to use for split
         :param labels: the labels for that data
-        :param row: the row name to get the value from
+        :param column: the row name to get the value from
         :param value: the value used to filter
         :return: the splited data, labels
         """
@@ -256,11 +256,11 @@ class DecisionTree(object):
         if is_numeric:
             median = float(value.split()[1])
             if ">" in value:
-                new_data = data[data[row] > median]
+                new_data = data[data[column] > median]
             else:
-                new_data = data[data[row] <= median]
+                new_data = data[data[column] <= median]
         else:
-            new_data = data[data[row] == value]
+            new_data = data[data[column] == value]
         # Get the labels for those filtered data, using it index
         new_labels = labels.iloc[new_data.index.tolist()]
         # Reset the indexes for both, that is done because pandas uses the index got from the original data
@@ -356,7 +356,7 @@ class DecisionTree(object):
 if __name__ == "__main__":
     data = []
     labels = []
-    data = pd.read_csv('/home/mattyws/Documentos/DecisionTrees/CMP263_DecisionTree/resources/dadosBenchmark_validacaoAlgoritmoAD.csv', sep=';')
+    data = pd.read_csv('resources/dadosBenchmark_validacaoAlgoritmoAD.csv', sep=';')
     labels = data.drop(columns=data.columns[:-1])
     data = data.drop(columns=data.columns[-1])
     tree = DecisionTree()
