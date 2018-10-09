@@ -1,9 +1,15 @@
 import csv
 import math
 import operator
+import random
+from time import time
 
 import pandas as pd
 import numpy as np
+
+import kfold
+from helper import *
+
 
 class DecisionNode(object):
     """
@@ -42,7 +48,7 @@ class DecisionNode(object):
             if self.is_numeric:
                 keys = list(self.child.keys())
                 median = float(keys[0].split()[1])
-                if value < median:
+                if value <= median:
                     sign = "<"
                 else:
                     sign = ">"
@@ -166,10 +172,9 @@ class DecisionTree(object):
             new_data, new_labels = self.__get_split(data, labels, best_info_column, value, is_numeric=best_column_is_numeric)
             # Calculate the entropy for the new snapshot
             value_entropy = self.__entropy(new_labels[new_labels.columns[0]].get_values())
-            if (self.max_depth > depth and value_entropy != 0) or (self.max_depth <= depth and value_entropy == 0.5):
+            if self.max_depth > depth and value_entropy != 0:
                 """
-                If we do not reach the max depth and the entropy is not 0, or if we reach the max depth but the
-                classes are even distributed (entropy == 0.5) call build and create a new node for the value
+                If we do not reach the max depth and the entropy is not 0 call build and create a new node for the value
                 """
                 new_node = self.__build(new_data, new_labels, depth=depth, parent=best_info_column)
                 # Add the new created child to the current node
@@ -196,6 +201,8 @@ class DecisionTree(object):
             if self.__is_numeric(data, j):
                 data_column = self.__numeric_column(data_column)
             # Compute the entropy for each value
+            # data_column = list(data_column)
+            # quit()
             column_values = dict()
             for i in range(len(data_column)):
                 # Compute the appearance for each value in the column
@@ -234,11 +241,17 @@ class DecisionTree(object):
         return entropy
 
     def __numeric_column(self, column):
+        """
+        Transform the value of a numeric column to a categoric format.
+        The data is split into two by its median.
+        :param column: the data for the specific numeric column
+        :return: the categorized column
+        """
         new_column = sorted(column)
-        if len(new_column)%2 == 0:
+        if len(new_column)%2 != 0:
             median = new_column[len(new_column)//2]
         else:
-            median = (new_column[len(new_column)//2] + new_column[(len(new_column)//2)+1])/2
+            median = (new_column[(len(new_column)//2)-1] + new_column[(len(new_column)//2)])/2
         new_column = pd.cut(column, bins=[-np.inf, median, np.inf], labels=["<= {}".format(median), "> {}".format(median)],
                             right=True)
         return new_column
@@ -338,7 +351,6 @@ class DecisionTree(object):
 
     def __render_graphviz_tree(self, filename="tree"):
         import graphviz
-        nodes = [self.root]
         tree = graphviz.Digraph(format="png", filename=filename)
         tree.attr("node", shape="box")
         id = 0
@@ -354,11 +366,69 @@ class DecisionTree(object):
         tree.render()
 
 if __name__ == "__main__":
+    k = 10
     data = []
     labels = []
-    data = pd.read_csv('resources/dadosBenchmark_validacaoAlgoritmoAD.csv', sep=';')
+    nseed = 100
+    random.seed(nseed)
+    # data = pd.read_csv("resources/Wine/wine.data.txt", header=None, sep=',')
+    # # Cria colunas
+    # data.columns = ["TipoVinho", "Alcohol", "Malic acid", "Ash", "Alcalinity of ash", "Magnesium", "Total phenols",
+    #                      "Flavanoids", "Nonflavanoid phenols", "Proanthocyanins", "Color intensity", "Hue",
+    #                      "OD280/OD315 of diluted wines", "Proline"]
+    # labels = data[data.columns[0:1]]
+    # data = data.drop(data[data.columns[0:1]], axis=1)
+
+
+    # #IONOSPHERE
+    # data = pd.read_csv("resources/Ionosphere/ionosphere.data.txt", header=None, sep=',', prefix='H')
+    # labels = data.drop(columns=data.columns[:-1])
+    # data = data.drop(columns=data.columns[-1])
+
+    # BrestCancer
+    data = pd.read_csv("resources/BreastCancer/breast-cancer-wisconsin.data.txt", header=None, sep=',', prefix='H')
+    data = data[data['H6'] != '?']
+    data['H6'] = data['H6'].apply(pd.to_numeric)
+    data = data.dropna()
+    data = data.reset_index()
     labels = data.drop(columns=data.columns[:-1])
     data = data.drop(columns=data.columns[-1])
-    tree = DecisionTree()
-    tree.train(data, labels)
-    tree.print(graphviz=True, filename="benchmark_tree/tree")
+    #Drop first column because they are ID's
+    data = data.drop(columns=data.columns[0])
+
+
+
+    with open("benchmark_tree/breast/result.csv", 'w') as csv_result_file:
+        writer = csv.writer(csv_result_file, delimiter=',')
+        writer.writerow(['Depth', 'Precision', 'Recall', 'F1_Score'])
+        for depth in [3, 5, 10]:
+            print("================ Depth {} ====================".format(depth))
+            kf = kfold.KFold()
+            kf.make_kfold(data, labels, k, nseed)
+            folds_precision = []
+            folds_recall = []
+            folds_f1 = []
+            for i in range(k):
+                data_test, labels_test, data_train, labels_train = kf.get_data_test_train()
+                kf.update_test_index()
+                print("Beggin decision tree training")
+                start = time()
+                tree = DecisionTree()
+                tree.train(data_train, labels_train, max_depth=depth)
+                end = time()
+
+                print("Took {} seconds".format(end-start))
+                predictions = tree.predict(data_test)
+                tree.print(graphviz=True, filename="benchmark_tree/breast/tree_{}".format(depth))
+                macro_p = macro_precision(labels_test[labels_test.columns[0]].tolist(), predictions)
+                macro_r = macro_recall(labels_test[labels_test.columns[0]].tolist(), predictions)
+                macro_f1 = macro_f1_score(labels_test[labels_test.columns[0]].tolist(), predictions)
+                folds_precision.append(macro_p)
+                folds_recall.append(macro_r)
+                folds_f1.append(macro_f1)
+                i+=1
+
+            writer.writerow([str(depth),
+                             "{0:.2f}".format((sum(folds_precision) / len(folds_precision)) * 100),
+                             "{0:.2f}".format((sum(folds_recall) / len(folds_recall)) * 100),
+                             "{0:.2f}".format((sum(folds_f1) / len(folds_f1)) * 100)])

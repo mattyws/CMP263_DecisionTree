@@ -1,0 +1,9 @@
+Ground truth: [1, 1, 1, 1, 1, 1, 2, 2, 2, 2, 2, 2, 2, 3, 3, 3, 3, 3]
+Predictions: [1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 2.0, 2.0, 2.0, 2.0, 2.0, 2.0, 2.0, 3.0, 3.0, 3.0, 3.0, 1.0]
+Precision per class: {1.0: 0.8571428571428571, 2.0: 1.0, 3.0: 1.0}
+Recall per class: {1: 1.0, 2: 1.0, 3: 0.8}
+F1 Scrore per class: {1.0: 4.0, 2.0: 4.0, 3.0: 3.2}
+Macro precision: 95.24%
+Macro recall: 93.33%
+Macro F1 Score: 94.28%
+Time took: 3.9607205390930176 seconds

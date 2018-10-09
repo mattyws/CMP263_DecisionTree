@@ -96,8 +96,14 @@ class KFold:
 
         for j in range(len(self.data_kfold)):
             if j != self.indice_teste:
-                data_train = pd.concat([data_train, self.data_kfold[j]])
-                labels_train = pd.concat([labels_train, self.labels_kfold[j]])
+                data_train = data_train.append(self.data_kfold[j], ignore_index=True)
+                labels_train = labels_train.append(self.labels_kfold[j], ignore_index=True)
+
+                # data_train = pd.concat([data_train, self.data_kfold[j]])
+                # labels_train = pd.concat([labels_train, self.labels_kfold[j]])
+
+                # new_df = new_df.append(data.iloc[rand_num], ignore_index=True)
+                # new_labels = new_labels.append(labels.iloc[rand_num], ignore_index=True)
 
         return data_test, labels_test, data_train, labels_train
 

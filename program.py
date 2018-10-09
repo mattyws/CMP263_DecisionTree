@@ -1,6 +1,7 @@
 import csv
 import os
 import pickle
+from time import time
 
 import pandas as pd
 import random
@@ -10,62 +11,8 @@ import decision_tree
 import kfold
 from random_forest import RandomForest
 import collections
+from helper import *
 
-def recall(true, predicted):
-    hit = [x for x, y in zip(true, predicted) if x == y]
-    true_values_count = collections.Counter(true)
-    hit_count = collections.Counter(hit)
-    recalls = {}
-    for key in true_values_count.keys():
-        if key in hit_count.keys():
-            recalls[key] = hit_count[key] / true_values_count[key]
-        else:
-            recalls[key] = 0
-    return recalls
-
-def precision(true, predicted):
-    hit = [x for x, y in zip(true, predicted) if x == y]
-    predicted_values_count = collections.Counter(predicted)
-    hit_count = collections.Counter(hit)
-    precisions = {}
-    for key in predicted_values_count.keys():
-        if key in hit_count.keys():
-            precisions[key] = hit_count[key] / predicted_values_count[key]
-        else :
-            precisions[key] = 0
-    return precisions
-
-def macro_recall(true, predicted):
-    recalls = recall(true, predicted)
-    macro_recall = 0
-    for key in recalls.keys():
-        macro_recall += recalls[key]
-    macro_recall /= len(recalls.keys())
-    return macro_recall
-
-def macro_precision(true, predicted):
-    precisions = precision(true, predicted)
-    macro_precision = 0
-    for key in precisions.keys():
-        macro_precision += precisions[key]
-    macro_precision /= len(precisions.keys())
-    return macro_precision
-
-def f1_score(true, predicted):
-    precisions = precision(true, predicted)
-    recalls = recall(true, predicted)
-    f1_scores = {}
-    for key in precisions.keys():
-        if precisions[key] == 0 and recalls[key] == 0:
-            f1_scores[key] = 0
-        else:
-            f1_scores[key] = 2 * ( (precisions[key]*recalls[key]) / (precisions[key]) + recalls[key] )
-    return f1_scores
-
-def macro_f1_score(true, predicted):
-    macro_p = macro_precision(true, predicted)
-    macro_r = macro_recall(true, predicted)
-    return 2 * ((macro_p * macro_r)/(macro_p + macro_r))
 
 #WINE
 # data = []
@@ -80,34 +27,34 @@ def macro_f1_score(true, predicted):
 # labels = data[data.columns[0:1]]
 # data = data.drop(data[data.columns[0:1]], axis=1)
 
-#IONOSPHERE
-# data = pd.read_csv("resources/Ionosphere/ionosphere.data.txt", header=None, sep=',', prefix='H')
-# labels = data.drop(columns=data.columns[:-1])
-# data = data.drop(columns=data.columns[-1])
-
-#BrestCancer
-data = pd.read_csv("resources/BreastCancer/breast-cancer-wisconsin.data.txt", header=None, sep=',', prefix='H')
-data = data[data['H6'] != '?']
-data['H6'] = data['H6'].apply(pd.to_numeric)
-data = data.dropna()
-data = data.reset_index()
+# #IONOSPHERE
+data = pd.read_csv("resources/Ionosphere/ionosphere.data.txt", header=None, sep=',', prefix='H')
 labels = data.drop(columns=data.columns[:-1])
 data = data.drop(columns=data.columns[-1])
-#Drop first column because they are ID's
-data = data.drop(columns=data.columns[0])
+
+#BrestCancer
+# data = pd.read_csv("resources/BreastCancer/breast-cancer-wisconsin.data.txt", header=None, sep=',', prefix='H')
+# data = data[data['H6'] != '?']
+# data['H6'] = data['H6'].apply(pd.to_numeric)
+# data = data.dropna()
+# data = data.reset_index()
+# labels = data.drop(columns=data.columns[:-1])
+# data = data.drop(columns=data.columns[-1])
+# #Drop first column because they are ID's
+# data = data.drop(columns=data.columns[0])
 
 
 # semente para o número aleatório
 nseed = 100
 random.seed(nseed)
 
-directory_results = "forest_results"
+directory_results = "forest_results_iono"
 min_number_trees = 3
 max_number_trees = 21
 
 with open(directory_results+"/result.csv", 'w') as csv_result_file:
     writer = csv.writer(csv_result_file, delimiter=',')
-    writer.writerow(['Number_Trees', 'Precision', 'Recall', 'F1_Score'])
+    writer.writerow(['Number_Trees', 'Precision', 'Recall', 'F1_Score', 'Time'])
 
     for num_trees in range(min_number_trees, max_number_trees):
         print("============= Number of trees {} =============".format(num_trees))
@@ -123,7 +70,7 @@ with open(directory_results+"/result.csv", 'w') as csv_result_file:
         folds_precision = []
         folds_recall = []
         folds_f1 = []
-
+        time_k_fold_begin = time()
         for i in range(k):
             print("======= Fold {} ======".format(i))
             fold_directory = directory_prefix+str(i)
@@ -133,7 +80,9 @@ with open(directory_results+"/result.csv", 'w') as csv_result_file:
             data_test, labels_test, data_train, labels_train = kf.get_data_test_train()
             kf.update_test_index()
             forest = RandomForest()
-            forest.train(data_train, labels_train, nseed, num_trees=num_trees)
+            start = time()
+            forest.train(data_train, labels_train, nseed, num_trees=num_trees, max_depth=5)
+            end = time()
             # Printing trees
             forest.print_forest_trees(graphviz=True, sufix=fold_directory+"/tree")
 
@@ -155,6 +104,7 @@ with open(directory_results+"/result.csv", 'w') as csv_result_file:
             results_text += "Macro precision: {0:.2f}%\n".format(macro_p * 100)
             results_text += "Macro recall: {0:.2f}%\n".format(macro_r * 100)
             results_text += "Macro F1 Score: {0:.2f}%\n".format(macro_f1 * 100)
+            results_text += "Time took: {} seconds\n".format(end-start)
 
             with open(fold_directory+"/result", "w") as text_file:
                 text_file.write(results_text)
@@ -163,7 +113,7 @@ with open(directory_results+"/result.csv", 'w') as csv_result_file:
                 pickle.dump(forest, output, pickle.HIGHEST_PROTOCOL)
 
             print(results_text)
-
+        time_end_k_fold = time()
         with open(directory_num_tree+"/result", "w") as result_file:
             result_file.write("Folds precision: {}\n".format(folds_precision))
             result_file.write("Folds recall: {}\n".format(folds_recall))
@@ -175,4 +125,5 @@ with open(directory_results+"/result.csv", 'w') as csv_result_file:
         writer.writerow([str(num_trees),
                          "{0:.2f}".format((sum(folds_precision) / len(folds_precision)) *100),
                          "{0:.2f}".format((sum(folds_recall) / len(folds_recall)) * 100),
-                         "{0:.2f}".format((sum(folds_f1) / len(folds_f1)) *100)])
+                         "{0:.2f}".format((sum(folds_f1) / len(folds_f1)) *100),
+                         "{}".format(time_end_k_fold-time_k_fold_begin)])

@@ -1,8 +1,8 @@
 Ground truth: ['b', 'b', 'b', 'b', 'b', 'b', 'b', 'b', 'b', 'b', 'b', 'b', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g']
-Predictions: ['g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g']
-Precision per class: {'g': 0.6571428571428571}
-Recall per class: {'b': 0, 'g': 1.0}
-F1 Scrore per class: {'g': 4.0}
-Macro precision: 65.71%
-Macro recall: 50.00%
-Macro F1 Score: 56.79%
+Predictions: ['b', 'b', 'b', 'g', 'b', 'g', 'b', 'b', 'g', 'b', 'b', 'b', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g']
+Precision per class: {'b': 1.0, 'g': 0.8846153846153846}
+Recall per class: {'b': 0.75, 'g': 1.0}
+F1 Scrore per class: {'b': 3.0, 'g': 4.0}
+Macro precision: 94.23%
+Macro recall: 87.50%
+Macro F1 Score: 90.74%

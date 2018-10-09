@@ -1,0 +1,9 @@
+Ground truth: ['b', 'b', 'b', 'b', 'b', 'b', 'b', 'b', 'b', 'b', 'b', 'b', 'b', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g']
+Predictions: ['b', 'g', 'g', 'b', 'b', 'b', 'b', 'b', 'b', 'b', 'g', 'b', 'b', 'g', 'b', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g']
+Precision per class: {'g': 0.875, 'b': 0.9090909090909091}
+Recall per class: {'g': 0.9545454545454546, 'b': 0.7692307692307693}
+F1 Scrore per class: {'g': 3.8181818181818183, 'b': 3.076923076923077}
+Macro precision: 89.20%
+Macro recall: 86.19%
+Macro F1 Score: 87.67%
+Time took: 7.850770711898804 seconds
